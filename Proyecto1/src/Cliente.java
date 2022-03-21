@@ -4,31 +4,25 @@ import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Recibir {
-    public static void main(String[] args) {
-        Interfaz intf=new Interfaz();
-        ServerSocket servidor=null;
-        Socket socket=null;
-        int PUERTO=9000;
-        DataInputStream input;
-        DataOutputStream output;
+public class Cliente {
+    private String Host="127.0.0.1";
+    private int Port=9000;
+    private DataInputStream input;
+    private DataOutputStream output;
+    private static String mensaje;
+    public Cliente(String envio){
         try {
-            servidor=new ServerSocket(PUERTO);
-
-            while (true){
-                socket=servidor.accept(); 
-                input=new DataInputStream(socket.getInputStream());
-                output=new DataOutputStream(socket.getOutputStream());
-                String mensaje=input.readUTF();
-                System.out.println("soy el servidor "+mensaje);
-                socket.close();
-
-            }
+            Socket socket=new Socket(Host,Port);
+            output = new DataOutputStream(socket.getOutputStream());
+            input=new DataInputStream(socket.getInputStream());
+            output.writeUTF(envio);
+            mensaje=input.readUTF();
+            socket.close();
         } catch (Exception e) {
-            //TODO: handle exception
         }
     }
+    public String getmensaje() {
+        return mensaje;
+        
+    }
 }
-    
-
-    
