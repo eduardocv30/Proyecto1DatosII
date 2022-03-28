@@ -7,11 +7,7 @@ public class Cliente {
     private int Port=9000;
     private DataInputStream input;
     private DataOutputStream output;
-<<<<<<< HEAD
     private String mensaje;
-=======
-    private static String mensaje;
->>>>>>> 0eb6127593fda1a79a815ef0bfb535d1f37e2783
     public Cliente(String envio){
         try {
             Socket socket=new Socket(Host,Port);
@@ -24,11 +20,6 @@ public class Cliente {
         }
     }
     public String getmensaje() {
-<<<<<<< HEAD
         return mensaje;  
-=======
-        return mensaje;
-        
->>>>>>> 0eb6127593fda1a79a815ef0bfb535d1f37e2783
     }
 }
