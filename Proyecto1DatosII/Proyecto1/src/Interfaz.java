@@ -36,7 +36,6 @@ public class Interfaz extends JFrame {
         label2.setBounds(510, 670, 300, 30);
         panel.setLayout(new GridLayout(y,x));
         this.setVisible(true);
-<<<<<<< HEAD
         this.botones(panel);
     }
     public void botones(JPanel panel) {
@@ -65,9 +64,4 @@ public class Interfaz extends JFrame {
     public String getnombre2() {
         return nombre2;
     }
-    
-=======
-    }
-   
->>>>>>> 0eb6127593fda1a79a815ef0bfb535d1f37e2783
 }
