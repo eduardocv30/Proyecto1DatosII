@@ -111,3 +111,11 @@ int manipulador::remontar(int jugador) { //realiza los calculos para remontar
         puntos=9;
     }
 }
+
+int manipulador::getpuntos1() {
+    return puntosj1
+}
+
+int manipulador::getpuntos2() {
+    return puntosj2
+}

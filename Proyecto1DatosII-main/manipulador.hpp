@@ -13,23 +13,21 @@ using namespace std;
 class manipulador {
 public:
     manipulador();
-
+    int puntosj1;
+    int puntosj2;
     string iguales(string casillas);
-
     string diferentes(string casillas);
-
     string puntos(int jugador, bool extra, string casillas);
-
     string especial();
     bool remontar_aux(int jugador);
     int remontar(int jugador);
+    int getpuntos1();
+    int getpuntos2();
 
 private:
     string retorno;
     int i;
     int j;
-    int puntosj1;
-    int puntosj2;
     bool _remontar;
 };
 

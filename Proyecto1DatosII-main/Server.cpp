@@ -158,8 +158,8 @@ int main(int argc, char* argv[])          /* input arguments are not used */
                         }
                         *casillas+=j;
                         send(connfd,id.c_str(),id.length(),0);// envio la imagen al cliente
-                        cout<<"puntaje jugador 1: "<<manipulador.puntosj1<<endl;
-                        cout<<"puntaje jugador 2: "<<manipulador.puntosj2<<endl;
+                        cout<<"puntaje jugador 1: "<<manipulador.getpuntos1()<<endl;
+                        cout<<"puntaje jugador 2: "<<manipulador.getpuntos2()<<endl;
                         cout<<"----------------------"<<endl;
                     }
 
