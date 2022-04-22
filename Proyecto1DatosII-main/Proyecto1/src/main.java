@@ -1,62 +1,54 @@
+import java.awt.Image;
+import java.sql.Time;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.awt.Image;
+
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 public class main {
     public static void main(String[] args) {
-        Timer timer=new Timer();
+        Timer timer=new Timer(); // utilizo un timer para reducir el número de consultas innecesarias al servidor
         String nombre1=JOptionPane.showInputDialog("nombre del jugador 1: ");
         String nombre2=JOptionPane.showInputDialog("nombre del jugador 2: ");
         Interfaz itf=new Interfaz(nombre1,nombre2);
         TimerTask tarea=new TimerTask() {
             @Override
+            
             public void run() {
-                Cliente c=new Cliente("rev");
-                if (c.getmensaje() != null){
-                    if (c.getmensaje().contains("d") || c.getmensaje().contains("v")){
-                        char clave=c.getmensaje().charAt(0);
-                        int i1=Character.getNumericValue(c.getmensaje().charAt(1));
-                        int j1=Character.getNumericValue(c.getmensaje().charAt(2));
-                        int i2=Character.getNumericValue(c.getmensaje().charAt(3));
-                        int j2=Character.getNumericValue(c.getmensaje().charAt(4));
-                        if (clave=='d'){
-                            itf.listaB[i1][j1].setEnabled(false);
-                            itf.listaB[i2][j2].setEnabled(false);
-                            if(c.getmensaje().charAt(5)=='1'){
-                                
-                                itf.p1+=Character.getNumericValue(c.getmensaje().charAt(6));
-                                itf.label1.setText(itf.getnombre1()+": "+itf.p1);
+                Cliente c=new Cliente("rev"); // indico al servidor que quiero revisar el estado actual
+                if (c.getmensaje() != null && c.getmensaje().contains("n")==false){
+                    if(c.getmensaje().contains("p")){//si contienen p indica el turno del jugador
+                        if (c.getmensaje().contains("p1")){
+                            JOptionPane.showMessageDialog(null,"turno del jugador 1");
+                            if(c.getmensaje().length()>2){ // si el mensaje contiene más de 2 digitos es porque esta activo el power up (p1r)
+                                JOptionPane.showMessageDialog(null,"el jugador 1 puede remontar");
                             }
-                            else{
-                                itf.p2+=Character.getNumericValue(c.getmensaje().charAt(6));;
-                                itf.label2.setText(itf.getnombre2()+": "+itf.p2);
+                        
+                        }
+                        //mismo logica pero con el jugador 2
+                        else{
+                            JOptionPane.showMessageDialog(null,"turno del jugador 2");
+                            if(c.getmensaje().length()>2){
+                                JOptionPane.showMessageDialog(null,"el jugador 2 puede remontar");
                             }
                         }
-                        else{
-                            itf.listaB[i1][j1].setIcon(new ImageIcon(itf.reves.getImage().getScaledInstance(70,60,Image.SCALE_SMOOTH)));
-                            itf.listaB[i2][j2].setIcon(new ImageIcon(itf.reves.getImage().getScaledInstance(70,60,Image.SCALE_SMOOTH)));
+                    }else{
+                        try {// es necesario por Thread del metodo diferentes
+                            manipulador manipulador=new manipulador(c.getmensaje(), itf);
+                        } catch (InterruptedException e) {
+                            // TODO Auto-generated catch block
+
+                            e.printStackTrace();
                         }
                         
                     }
-                    else if(c.getmensaje().contains("p")){
-                        if (c.getmensaje().contains("p1")){
-                            JOptionPane.showMessageDialog(null,"turno del jugador 1");
-                        }
-                        else{
-                            JOptionPane.showMessageDialog(null,"turno del jugador 2");
-                        }
-                    }
-
-                }
                 
+                }
             }
-            
         };
 
-        timer.schedule(tarea, 0,500);
+        timer.schedule(tarea, 0,100);
         
             }
         }

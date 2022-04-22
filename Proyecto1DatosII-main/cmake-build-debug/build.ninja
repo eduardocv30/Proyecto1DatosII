@@ -84,6 +84,12 @@ build CMakeFiles/Proyecto1DatosII_main.dir/matrizpaginada.cpp.o: CXX_COMPILER__P
   OBJECT_DIR = CMakeFiles/Proyecto1DatosII_main.dir
   OBJECT_FILE_DIR = CMakeFiles/Proyecto1DatosII_main.dir
 
+build CMakeFiles/Proyecto1DatosII_main.dir/manipulador.cpp.o: CXX_COMPILER__Proyecto1DatosII_main_Debug /home/jose/Escritorio/Proyecto1DatosII-main/manipulador.cpp || cmake_object_order_depends_target_Proyecto1DatosII_main
+  DEP_FILE = CMakeFiles/Proyecto1DatosII_main.dir/manipulador.cpp.o.d
+  FLAGS = -g -std=gnu++14
+  OBJECT_DIR = CMakeFiles/Proyecto1DatosII_main.dir
+  OBJECT_FILE_DIR = CMakeFiles/Proyecto1DatosII_main.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Proyecto1DatosII_main
@@ -92,7 +98,7 @@ build CMakeFiles/Proyecto1DatosII_main.dir/matrizpaginada.cpp.o: CXX_COMPILER__P
 #############################################
 # Link the executable Proyecto1DatosII_main
 
-build Proyecto1DatosII_main: CXX_EXECUTABLE_LINKER__Proyecto1DatosII_main_Debug CMakeFiles/Proyecto1DatosII_main.dir/Server.cpp.o CMakeFiles/Proyecto1DatosII_main.dir/matrizpaginada.cpp.o
+build Proyecto1DatosII_main: CXX_EXECUTABLE_LINKER__Proyecto1DatosII_main_Debug CMakeFiles/Proyecto1DatosII_main.dir/Server.cpp.o CMakeFiles/Proyecto1DatosII_main.dir/matrizpaginada.cpp.o CMakeFiles/Proyecto1DatosII_main.dir/manipulador.cpp.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/Proyecto1DatosII_main.dir
   POST_BUILD = :

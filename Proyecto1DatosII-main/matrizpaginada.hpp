@@ -15,15 +15,27 @@ using namespace std;
 
 class matrizpaginada {
 private:
+    struct ficha{
+        int i;
+        int j;
+        string imagen;
+    };
     map<string ,string> imagenes;
-    vector<string> matrizvirtual;
+    vector<ficha> matrizvirtual;
+    int page_fault;
+    int page_hit;
     string leerdisco(int i, int j);
-    void redimencionar();
+    string estan_en_memoria(vector<ficha>);
+    void mem_usage(double& vm_usage);
+    int memoria();
+
 public:
     int tamano;
-    string leermatrizpaginada(char i,char j);
+    bool en_matriz;
+    string leermatrizpaginada(int i,int j);
     void crearmatrizdisco();
     matrizpaginada();
+    void shuffle();
 };
 
 

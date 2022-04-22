@@ -7,7 +7,6 @@
 #include <unistd.h>
 
 /* sockets */
-#include <netdb.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -21,6 +20,8 @@
 #include <stdlib.h>
 #include "iostream"
 #include "matrizpaginada.hpp"
+#include "manipulador.hpp"
+
 using namespace std;
 
 /* server parameters */
@@ -36,19 +37,22 @@ int main(int argc, char* argv[])          /* input arguments are not used */
     struct sockaddr_in servaddr, client;
 
 
-    int  len_rx, len_tx = 0;                     /* received and sent length, in bytes */
-    char buff_tx[BUF_SIZE] = "Hello client, I am the server";
+    int  len_rx= 0;                     /* received and sent length, in bytes */
+
     char buff_rx[BUF_SIZE];   /* buffers for reception  */
-    int jugador=rand()%2;
-    string* casillas=new string;
-    string* puntaje=new string;
-    bool desab=false;
-    bool reset= false;
-    bool notificar=true;
+    srand(time(NULL)); // necesario para obtener un número diferente en el rand()
+    int jugador=rand()%2; //define el primer turno
+    string* casillas=new string;// guardo las casillas que salen en un turno
+    bool desab=false; //activa el desabilitar fichas
+    bool reset= false; //activa el resetear imagenes
+    bool especial=true; //activa la ficha especial
+    bool notificar=true; //activa las notificaciones
     int turno=0;
-    string* id1=new string;
-    matrizpaginada matrizpaginada;
-    matrizpaginada.crearmatrizdisco();
+    string* id1=new string;//guardo el id obtenido de la primer ficha para comparaciones
+    matrizpaginada matrizpaginada;// inico la matriz paginada
+    matrizpaginada.crearmatrizdisco();// crear la matriz que va al disco como un .txt
+    matrizpaginada.shuffle();
+    manipulador manipulador; // manipula el envio de mensajes
     /* socket creation */
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1)
@@ -108,7 +112,7 @@ int main(int argc, char* argv[])          /* input arguments are not used */
             while(1) /* read data from a client socket till it is closed */
             {
                 /* read client message, copy it into buffer */
-                len_rx = recv(connfd, buff_rx, sizeof(buff_rx),0);
+                len_rx = recv(connfd, buff_rx, sizeof(buff_rx),0);// recibe los mensajes del cliente
 
                 if(len_rx == -1)
                 {
@@ -116,58 +120,58 @@ int main(int argc, char* argv[])          /* input arguments are not used */
                 }
                 else if(len_rx == 0) /* if length is 0 client socket closed, then exit */
                 {
-                    //printf("[SERVER]: client socket closed \n\n");
                     close(connfd);
                     break;
                 }
                 else
                 {
-                    std::string s(buff_rx,len_rx);
-                    if(s.find("rev")==string::npos){
+                    std::string s(buff_rx,len_rx);// analiza el mensaje como un string
+                    if(s.find("rev")==string::npos){ // mientras el mensaje sea diferente de rev
                         string id;
                         char i=s[2];
                         char j=s[3];
-                        id=matrizpaginada.leermatrizpaginada(i,j);
-                        if(turno==0){
+                        id=matrizpaginada.leermatrizpaginada(i-48,j-48);// el id en realidad es la imagen obtenida de la matriz paginada
+
+                        if(turno==0){// volteo la primer carta
                             *id1=id;
                             turno++;
                             *casillas=i;
+                            especial=true;
                         }
-                        else{
+
+                        else{// volteo la segunda carta
                             *casillas+=i;
                             turno=0;
-                            jugador++;
-                            notificar=true;
-                            if (id==*id1){
-                                jugador--;
-                                desab=true;
-                                matrizpaginada.tamano-=2;
-                                if(jugador%2==0){
-                                    *puntaje="11";
-                                }
-                                else{
-                                    *puntaje="21";
-                                }
+
+                            
+                            if (id==*id1){// comparo si las 2 imagenes son iguales
+                                desab=true; // activo el desabilitar las imagenes
+                                matrizpaginada.tamano-=2; //reduzco el tamaño de la matriz
+                                matrizpaginada.shuffle();
+
                             }
                             else{
-                                reset=true;
+                                jugador++; // avanza el turno
+                                reset=true; // activo el reseteo de las imagenes
+                                notificar=true; // notifico el cambio de turno
                             };
-                        } 
+                        }
                         *casillas+=j;
-                        int mlen=id.length();
-                        send(connfd,id.c_str(),mlen,0);
+                        send(connfd,id.c_str(),id.length(),0);// envio la imagen al cliente
+                        cout<<"puntaje jugador 1: "<<manipulador.puntosj1<<endl;
+                        cout<<"puntaje jugador 2: "<<manipulador.puntosj2<<endl;
+                        cout<<"----------------------"<<endl;
                     }
+
                     else{
-                        string m;
+                        string m; // va a ser mi mensaje
                         if(desab){
-                            m="d";
-                            m+=*casillas;
-                            m+=*puntaje;
+                            manipulador.iguales(*casillas);//agrego cuales casillas voy a desabilitar
+                            m=manipulador.puntos(jugador,matrizpaginada.en_matriz,*casillas); // agrego los puntos y puntos exta
                             desab=false;
                         }
                         else if(reset){
-                            m="v";
-                            m+=*casillas;
+                            m=manipulador.diferentes(*casillas); // envio las casillas a restablecer
                             reset=false;
                         }
                         else if(turno==0 && notificar){
@@ -178,13 +182,20 @@ int main(int argc, char* argv[])          /* input arguments are not used */
                                 m="p2";
                             }
                             notificar= false;
+
+                            if(manipulador.remontar_aux(jugador)){ // agrego un r si se puede remontar
+                                m+="r";
+                            }
+                        }
+                        else if(especial && turno==0){
+                            m=manipulador.especial();// agrega las casillas donde agregara la estrella
+                            especial=false;
                         }
 
                         else{
                             m="n";
                         }
-                        int mlen=m.length();
-                        send(connfd,m.c_str(),mlen,0);
+                        send(connfd,m.c_str(),m.length(),0); // envio el mensaje que provocara una modificacion
                         }
                     }
                 }

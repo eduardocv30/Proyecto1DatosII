@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class Interfaz extends JFrame {
+public class Interfaz extends JFrame { //crea la interfaz
     private int x=6;
     private int y=7;
     public int p1=0;
@@ -47,9 +47,9 @@ public class Interfaz extends JFrame {
         int i=0;
         int j=0;
         while(j<y){
-            Ficha ficha=new Ficha(i, j);
+            Ficha ficha=new Ficha(i, j);//cada ficha tiene su propia coordenada i y j
             panel.add(ficha.boton);
-            listaB[i][j]=ficha.boton;
+            listaB[i][j]=ficha.boton;// la utilizo para acceder a los botones
             ficha.boton.setIcon(new ImageIcon(reves.getImage().getScaledInstance(70, 60,Image.SCALE_SMOOTH)));
             i++;
             if (i==x){
@@ -68,11 +68,5 @@ public class Interfaz extends JFrame {
         return nombre2;
     }
 
-    public int getx(){
-        return x;
-    }
-
-    public int gety(){
-        return y;
-    }
+   
 }
